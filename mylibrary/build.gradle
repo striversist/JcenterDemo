@@ -1,0 +1,69 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+
+
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'com.android.support:appcompat-v7:28.0.0-rc02'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
+
+apply plugin: 'com.novoda.bintray-release'
+
+//加上这些
+tasks.withType(Javadoc) {
+    options{ encoding "UTF-8"
+        charSet 'UTF-8'
+        links "http://docs.oracle.com/javase/7/docs/api"
+    }
+}
+
+android {
+    lintOptions {
+        abortOnError false
+    }
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+String localBintrayUser = properties.getProperty("bintray.user")
+String localBintrayApikey = properties.getProperty("bintray.apikey")
+
+publish {
+    bintrayUser = localBintrayUser      //bintray.com 用户名
+    bintrayKey = localBintrayApikey     //bintray.com apikey
+    dryRun = false
+
+    repoName= 'maven'                   // 仓库名
+    userOrg = 'striversist'             // bintray注册的用户名
+    groupId = 'com.fs.android'          // compile引用时的第1部分groupId
+    artifactId = 'mylibrary'            // compile引用时的第2部分项目名
+    publishVersion = '0.2'              // compile引用时的第3部分版本号
+    desc = 'This is a demo using novoda'    // 项目描述
+    website = 'https://github.com/striversist/JitPackDemo'  // github 托管地址
+}
